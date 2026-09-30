@@ -19,9 +19,14 @@
 
 </head>
 
+
 <body>
 
 <div class="app">
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
 
     <aside class="sidebar">
 
@@ -29,36 +34,89 @@
             id="newChat"
             class="new-chat"
         >
-            + New Chat
+            <span>＋</span>
+            New chat
         </button>
 
-        <div class="sidebar-title">
-            Local SLM
+
+        <div class="sidebar-section">
+
+            <div class="sidebar-label">
+                LOCAL SLM
+            </div>
+
+            <div class="sidebar-description">
+                Private local inference
+                powered by Ollama.
+            </div>
+
         </div>
 
-        <div class="sidebar-info">
-            Running locally with Ollama
+
+        <div class="sidebar-bottom">
+
+            <button
+                id="observabilityButton"
+                class="sidebar-button"
+            >
+                <span>◉</span>
+                Observability
+            </button>
+
+            <div class="local-status">
+
+                <span
+                    id="statusDot"
+                    class="status-dot"
+                ></span>
+
+                <span id="statusText">
+                    Checking Ollama...
+                </span>
+
+            </div>
+
         </div>
 
     </aside>
 
 
+    <!-- =========================================
+         MAIN
+    ========================================== -->
+
     <main class="main">
+
+        <!-- HEADER -->
 
         <header class="header">
 
-            <div class="title">
-                Local SLM
+            <div class="header-left">
+
+                <div class="title">
+                    Local SLM
+                </div>
+
             </div>
 
-            <select id="modelSelect">
-                <option>
-                    Loading models...
-                </option>
-            </select>
+
+            <div class="header-right">
+
+                <select
+                    id="modelSelect"
+                    class="model-select"
+                >
+                    <option>
+                        Loading models...
+                    </option>
+                </select>
+
+            </div>
 
         </header>
 
+
+        <!-- MESSAGES -->
 
         <section
             id="messages"
@@ -67,19 +125,51 @@
 
             <div class="welcome">
 
+                <div class="welcome-icon">
+                    AI
+                </div>
+
                 <h1>
-                    Local SLM Chat
+                    How can I help you?
                 </h1>
 
                 <p>
-                    Ask anything. Your conversation
-                    stays on your machine.
+                    This conversation runs
+                    entirely on your machine.
                 </p>
+
+
+                <div class="suggestions">
+
+                    <button
+                        class="suggestion"
+                        data-prompt="Explain Apache Spark in simple terms."
+                    >
+                        Explain Apache Spark
+                    </button>
+
+                    <button
+                        class="suggestion"
+                        data-prompt="Write a Python function to find duplicate values in a list."
+                    >
+                        Write Python code
+                    </button>
+
+                    <button
+                        class="suggestion"
+                        data-prompt="Explain the difference between a data lake and a data warehouse."
+                    >
+                        Explain data engineering
+                    </button>
+
+                </div>
 
             </div>
 
         </section>
 
+
+        <!-- COMPOSER -->
 
         <footer class="composer">
 
@@ -91,21 +181,185 @@
                     rows="1"
                 ></textarea>
 
+
+                <button
+                    id="stopButton"
+                    class="stop-button hidden"
+                    title="Stop generating"
+                >
+                    ■
+                </button>
+
+
                 <button
                     id="sendButton"
+                    class="send-button"
+                    title="Send message"
                 >
                     ↑
                 </button>
 
             </div>
 
+
             <div class="footer-text">
-                Local inference with Ollama
+
+                Local inference • Ollama
+                • No cloud API
+
             </div>
 
         </footer>
 
     </main>
+
+
+    <!-- =========================================
+         OBSERVABILITY PANEL
+    ========================================== -->
+
+    <aside
+        id="observabilityPanel"
+        class="observability-panel"
+    >
+
+        <div class="panel-header">
+
+            <div>
+
+                <div class="panel-title">
+                    Observability
+                </div>
+
+                <div class="panel-subtitle">
+                    Local SLM performance
+                </div>
+
+            </div>
+
+
+            <button
+                id="closeObservability"
+                class="close-button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Requests
+                </div>
+
+                <div
+                    id="totalRequests"
+                    class="stat-value"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Success
+                </div>
+
+                <div
+                    id="successRate"
+                    class="stat-value"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Avg Latency
+                </div>
+
+                <div
+                    id="avgLatency"
+                    class="stat-value"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Avg TTFT
+                </div>
+
+                <div
+                    id="avgTTFT"
+                    class="stat-value"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Avg Speed
+                </div>
+
+                <div
+                    id="avgSpeed"
+                    class="stat-value"
+                >
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="logs-section">
+
+            <div class="logs-header">
+
+                <span>
+                    Recent requests
+                </span>
+
+                <button
+                    id="refreshLogs"
+                    class="refresh-button"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <div
+                id="logsContainer"
+                class="logs-container"
+            >
+                Loading...
+            </div>
+
+        </div>
+
+    </aside>
 
 </div>
 

@@ -1,11 +1,15 @@
+import json
+
 import httpx
 
 
 OLLAMA_URL = "http://localhost:11434"
 
 
-async def get_models():
+async def get_models() -> list[str]:
+
     async with httpx.AsyncClient() as client:
+
         response = await client.get(
             f"{OLLAMA_URL}/api/tags",
             timeout=30
@@ -13,11 +17,25 @@ async def get_models():
 
         response.raise_for_status()
 
-        return response.json()
+        data = response.json()
+
+        return [
+            model["name"]
+            for model in data.get(
+                "models",
+                []
+            )
+        ]
 
 
-async def chat_stream(model: str, messages: list[dict]):
-    async with httpx.AsyncClient(timeout=None) as client:
+async def chat_stream(
+    model: str,
+    messages: list[dict]
+):
+
+    async with httpx.AsyncClient(
+        timeout=None
+    ) as client:
 
         async with client.stream(
             "POST",
@@ -33,5 +51,13 @@ async def chat_stream(model: str, messages: list[dict]):
 
             async for line in response.aiter_lines():
 
-                if line:
-                    yield line
+                if not line:
+                    continue
+
+                try:
+
+                    yield json.loads(line)
+
+                except json.JSONDecodeError:
+
+                    continue
