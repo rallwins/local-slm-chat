@@ -1,0 +1,5 @@
+{"id":"spark-driver-executors","question":"Explain the roles of the driver and executors in Apache Spark.","expected_keywords":["driver","executor","task"]}
+{"id":"spark-shuffle","question":"What is a shuffle in Spark, and why can it be expensive?","expected_keywords":["shuffle","partition","network"]}
+{"id":"spark-lazy-evaluation","question":"Explain lazy evaluation in Spark and when a transformation runs.","expected_keywords":["lazy","transformation","action"]}
+{"id":"spark-partitioning","question":"How does partitioning affect Spark performance?","expected_keywords":["partition","parallel","skew"]}
+{"id":"spark-fault-tolerance","question":"How can Spark recover lost data during a computation?","expected_keywords":["lineage","recompute","fault"]}

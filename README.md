@@ -141,6 +141,22 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser. The model s
 - `GET /api/logs?limit=100` returns recent request records. The limit is clamped to 1–1000.
 - `GET /api/stats` returns aggregate statistics for up to the latest 10,000 records.
 
+## Prompt Evaluation
+
+Compare the data-engineering prompt versions against the included JSONL benchmark:
+
+```sh
+python -m evaluation.evaluate --model llama3.2:3b
+```
+
+The runner evaluates every case with each prompt template and writes per-case responses, keyword coverage, latency, and Ollama token metrics to a timestamped file under `evaluation/results/`. Override the templates, dataset, or result path with `--templates`, `--dataset`, or `--output`. For example:
+
+```sh
+python -m evaluation.evaluate --model llama3.2:3b --templates data_engineer:v2
+```
+
+Each dataset line is a JSON object with an `id`, a `question`, and a non-empty `expected_keywords` list. Keyword coverage is a lightweight matching heuristic for comparing prompt runs; it is not a measure of semantic correctness.
+
 ## Local Data
 
 The application connects to Ollama at `localhost`; it does not use a cloud API. Request metadata (model, counts, timings, status, and error details for failed requests) is stored in `logs/chat.jsonl`. Prompt and response text are not written to this log. The `logs/` directory is ignored by Git.
