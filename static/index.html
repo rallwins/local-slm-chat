@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Local SLM Chat</title>
+
+    <link
+        rel="stylesheet"
+        href="/style.css"
+    >
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <button
+            id="newChat"
+            class="new-chat"
+        >
+            + New Chat
+        </button>
+
+        <div class="sidebar-title">
+            Local SLM
+        </div>
+
+        <div class="sidebar-info">
+            Running locally with Ollama
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <header class="header">
+
+            <div class="title">
+                Local SLM
+            </div>
+
+            <select id="modelSelect">
+                <option>
+                    Loading models...
+                </option>
+            </select>
+
+        </header>
+
+
+        <section
+            id="messages"
+            class="messages"
+        >
+
+            <div class="welcome">
+
+                <h1>
+                    Local SLM Chat
+                </h1>
+
+                <p>
+                    Ask anything. Your conversation
+                    stays on your machine.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <footer class="composer">
+
+            <div class="input-container">
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Message your local AI..."
+                    rows="1"
+                ></textarea>
+
+                <button
+                    id="sendButton"
+                >
+                    ↑
+                </button>
+
+            </div>
+
+            <div class="footer-text">
+                Local inference with Ollama
+            </div>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script src="/app.js"></script>
+
+</body>
+
+</html>
