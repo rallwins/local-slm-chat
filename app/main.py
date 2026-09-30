@@ -14,13 +14,17 @@ from app.metrics import (
 from app.models import (
     ChatRequest,
     HealthResponse,
-    ModelsResponse
+    ModelsResponse,
+    PromptTemplatesResponse
 )
 from app.ollama import (
     chat_stream,
     get_models
 )
-
+from app.prompts import (
+    get_prompt_template,
+    get_template_list
+)
 
 app = FastAPI(
     title="Local SLM Chat",
@@ -83,6 +87,18 @@ async def models():
             detail=f"Unable to connect to Ollama: {exc}"
         )
 
+# --------------------------------------------------
+# Prompt Templates
+# --------------------------------------------------
+@app.get(
+    "/api/prompts",
+    response_model=PromptTemplatesResponse
+)
+async def prompts():
+
+    return {
+        "templates": get_template_list()
+    }
 
 # --------------------------------------------------
 # Chat
@@ -105,13 +121,31 @@ async def chat(request: ChatRequest):
 
     prompt_eval_duration_ns = None
 
+    # ------------------------------------------
+    # Get prompt template
+    # ------------------------------------------
+
+    template = get_prompt_template(
+        request.prompt_template
+    )
+    # ------------------------------------------
+    # Build messages
+    # ------------------------------------------
+
     messages = [
+        {
+            "role": "system",
+            "content": template.system_prompt
+        }
+    ]
+
+    messages.extend(
         {
             "role": message.role,
             "content": message.content
         }
         for message in request.messages
-    ]
+    )
 
     async def generate():
 
@@ -230,6 +264,9 @@ async def chat(request: ChatRequest):
 
                 "model": request.model,
 
+                "prompt_template":
+                        request.prompt_template,
+
                 "message_count": len(
                     messages
                 ),
@@ -279,6 +316,9 @@ async def chat(request: ChatRequest):
 
                 "model":
                     request.model,
+
+                "prompt_template":
+                    request.prompt_template,
 
                 "prompt_tokens":
                     prompt_tokens,

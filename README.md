@@ -9,6 +9,93 @@ A local web chat interface for language models served by Ollama. FastAPI serves 
 - Check Ollama connection status and inspect per-request latency, time to first token (TTFT), token counts, and generation speed.
 - Review recent requests and aggregate performance statistics in the Observability panel.
 
+## Architecture
+
+```text
+┌─────────────────────────────────────────────────────────┐
+│                         USER                            │
+│                                                         │
+│             "Explain Spark architecture"                │
+└───────────────────────┬─────────────────────────────────┘
+						│
+						▼
+┌─────────────────────────────────────────────────────────┐
+│                    WEB FRONTEND                         │
+│               HTML + CSS + JavaScript                   │
+│                                                         │
+│  - Chat UI                                              │
+│  - Model selector                                       │
+│  - Prompt selector                                      │
+│  - Streaming response                                   │
+└───────────────────────┬─────────────────────────────────┘
+						│
+					HTTP / SSE
+						│
+						▼
+┌─────────────────────────────────────────────────────────┐
+│                       FASTAPI                           │
+│                                                         │
+│  /api/chat                                              │
+│                                                         │
+│  - Validate request                                     │
+│  - Select prompt template                               │
+│  - Build conversation                                   │
+│  - Generate request ID                                  │
+│  - Measure latency                                      │
+│  - Stream response                                      │
+│  - Record metrics                                       │
+└───────────────────────┬─────────────────────────────────┘
+						│
+				  HTTP localhost
+						│
+						▼
+┌─────────────────────────────────────────────────────────┐
+│                       OLLAMA                            │
+│                  localhost:11434                        │
+│                                                         │
+│            Model management + inference runtime         │
+└───────────────────────┬─────────────────────────────────┘
+						│
+						▼
+┌─────────────────────────────────────────────────────────┐
+│                  LOCAL LLM MODEL                        │
+│                                                         │
+│              Llama / Qwen / Mistral / Gemma             │
+│                                                         │
+│                  Token generation                       │
+└───────────────────────┬─────────────────────────────────┘
+						│
+				  Streaming tokens
+						│
+						▼
+┌─────────────────────────────────────────────────────────┐
+│                       FASTAPI                           │
+│                                                         │
+│  Calculate:                                             │
+│  - TTFT                                                 │
+│  - Generation time                                      │
+│  - Total latency                                        │
+│  - Tokens/sec                                           │
+│  - Prompt tokens                                        │
+│  - Output tokens                                        │
+└───────────────────────┬─────────────────────────────────┘
+						│
+					SSE token stream
+						│
+						▼
+┌─────────────────────────────────────────────────────────┐
+│                    WEB FRONTEND                         │
+│                                                         │
+│        "Spark is a distributed..."                      │
+│        "..."                                            │
+│        "..."                                            │
+└─────────────────────────────────────────────────────────┘
+
+						│
+						▼
+				 logs/chat.jsonl
+```
+
 ## Requirements
 
 - Python 3.10 or newer

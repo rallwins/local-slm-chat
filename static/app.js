@@ -1,3 +1,8 @@
+const promptSelect =
+    document.getElementById(
+        "promptSelect"
+    );
+
 const messagesContainer =
     document.getElementById("messages");
 
@@ -321,6 +326,10 @@ function addMetrics(
             metrics.model
         )}</span>
 
+        <span>🧠 ${escapeHtml(
+            metrics.prompt_template || "general"
+        )}</span>
+
         <span>⏱ ${latency}</span>
 
         <span>⚡ ${speed}</span>
@@ -550,8 +559,15 @@ async function sendMessage() {
                     },
 
                     body: JSON.stringify({
+
                         model: model,
-                        messages: conversation
+
+                        prompt_template:
+                            promptSelect.value,
+
+                        messages:
+                            conversation
+
                     }),
 
                     signal:
@@ -1200,6 +1216,75 @@ async function refreshLogs() {
     }
 }
 
+/*=========================================
+   LOAD PROMPTS
+========================================= */
+
+async function loadPrompts() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/prompts"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load prompts"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        promptSelect.innerHTML = "";
+
+
+        data.templates.forEach(
+            template => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    template.id;
+
+
+                option.textContent =
+                    template.name;
+
+
+                promptSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    } catch (error) {
+
+        promptSelect.innerHTML = `
+            <option value="general">
+                General Assistant
+            </option>
+        `;
+
+        console.error(
+            "Prompt loading failed:",
+            error
+        );
+    }
+}
+
 
 /* =========================================
    TEXTAREA AUTO RESIZE
@@ -1278,6 +1363,8 @@ function escapeHtml(value) {
 async function initialize() {
 
     await loadModels();
+
+    await loadPrompts();
 
     await checkHealth();
 

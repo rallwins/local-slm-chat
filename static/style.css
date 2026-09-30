@@ -805,8 +805,17 @@ textarea {
         padding: 0 12px;
     }
 
-    .model-select {
-        min-width: 140px;
+    .header-right {
+        display: flex;
+
+        gap: 5px;
+    }
+
+    .model-select,
+    .prompt-select {
+        min-width: 130px;
+
+        max-width: 150px;
     }
 
     .messages {
@@ -821,4 +830,17 @@ textarea {
         width: 100%;
     }
 
+}
+.prompt-select {
+    min-width: 210px;
+
+    padding: 8px 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: var(--text);
 }
